@@ -5,10 +5,11 @@ dotenv.config();
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 
-// const errorController = require("./controllers/error");
-const connectDB = require("./util/database");
+const errorController = require("./controllers/error");
+const { connectDB } = require("./util/database");
+
 // const sequelize = require("./util/database");
-// const adminRoutes = require("./routes/admin");
+const adminRoutes = require("./routes/admin");
 // const shopRoutes = require("./routes/shop");
 
 // // associations
@@ -26,11 +27,11 @@ app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
-// app.use("/admin", adminRoutes);
+app.use("/admin", adminRoutes);
 // app.use(shopRoutes);
 // app.use()
 
-// app.use(errorController.get404);
+app.use(errorController.get404);
 // sequelize
 //   .sync()
 //   // .sync({force: true})
@@ -43,6 +44,6 @@ app.use(express.static(path.join(__dirname, "public")));
 //   });
 connectDB(() => {
   app.listen(4000, () => {
-    console.log("App is running on http://localhost:3000");
+    console.log("App is running on http://localhost:4000");
   });
 });
