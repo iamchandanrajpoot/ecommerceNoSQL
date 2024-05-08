@@ -39,6 +39,7 @@ exports.postAddProduct = async (req, res, next) => {
   try {
     const result = await product.save();
     console.log(result);
+    res.redirect("/");
   } catch (error) {
     console.log(error);
   }
