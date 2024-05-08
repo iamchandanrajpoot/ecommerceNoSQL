@@ -5,17 +5,18 @@ dotenv.config();
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 
-const errorController = require("./controllers/error");
-const sequelize = require("./util/database");
-const adminRoutes = require("./routes/admin");
-const shopRoutes = require("./routes/shop");
+// const errorController = require("./controllers/error");
+const connectDB = require("./util/database");
+// const sequelize = require("./util/database");
+// const adminRoutes = require("./routes/admin");
+// const shopRoutes = require("./routes/shop");
 
-// associations
-require("./models/associations/user_product");
-require("./models/associations/user_cart");
-require("./models/associations/cart_product");
-require("./models/associations/user_order");
-require("./models/associations/oder_product");
+// // associations
+// require("./models/associations/user_product");
+// require("./models/associations/user_cart");
+// require("./models/associations/cart_product");
+// require("./models/associations/user_order");
+// require("./models/associations/oder_product");
 
 const app = express();
 app.set("view engine", "ejs");
@@ -25,18 +26,23 @@ app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/admin", adminRoutes);
-app.use(shopRoutes);
+// app.use("/admin", adminRoutes);
+// app.use(shopRoutes);
 // app.use()
 
-app.use(errorController.get404);
-sequelize
-  .sync()
-  // .sync({force: true})
-  .then(() => {
-    console.log("Databasse synced");
-    app.listen(3000);
-  })
-  .catch((err) => {
-    console.log(err);
+// app.use(errorController.get404);
+// sequelize
+//   .sync()
+//   // .sync({force: true})
+//   .then(() => {
+//     console.log("Databasse synced");
+
+//   })
+//   .catch((err) => {
+//     console.log(err);
+//   });
+connectDB(() => {
+  app.listen(4000, () => {
+    console.log("App is running on http://localhost:3000");
   });
+});
