@@ -3,10 +3,8 @@ const Product = require("../models/product");
 // const Order = require("../models/oder");
 
 exports.getProducts = (req, res, next) => {
-  console.log("SDf sjkkgfjs");
   Product.fetchAll()
     .then((products) => {
-      console.log(products);
       res.render("shop/index", {
         prods: products,
         pageTitle: "Shop",
@@ -66,38 +64,17 @@ exports.getIndex = (req, res, next) => {
 //   }
 // };
 
-// exports.postCart = async (req, res) => {
-//   try {
-//     const product = await Product.findByPk(req.body.productId);
-//     const userInstance = await User.findByPk(req.user.id);
-//     let cartInstance = await userInstance.getCart();
-//     if (!cartInstance) {
-//       cartInstance = await userInstance.createCart();
-//     }
-//     const productInCartOfGivenId = await cartInstance.getProducts({
-//       where: { id: product.id },
-//     });
-//     let quantity = 0;
-//     if (productInCartOfGivenId.length > 0) {
-//       quantity = productInCartOfGivenId[0].CartItem.quantity + 1;
-//       console.log("product in cart");
-//       console.log(productInCartOfGivenId);
-//       await cartInstance.addProduct(product, {
-//         through: { quantity },
-//       });
-//     } else {
-//       quantity = 1;
-//       await cartInstance.addProduct(product, {
-//         through: { quantity },
-//       });
-//     }
-
-//     res.redirect("/cart");
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).json({ message: "Internal Server Error" });
-//   }
-// };
+exports.postCart = async (req, res) => {
+  const prodId = req.body.productId;
+  try {
+    const product = await Product.findByID(prodId);
+    const result = await req.user.addToCart(product, req.user.id);
+    console.log(result);
+    res.redirect("/cart");
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 // exports.postCartDeleteProduct = async (req, res) => {
 //   try {

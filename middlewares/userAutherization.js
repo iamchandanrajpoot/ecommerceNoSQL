@@ -9,10 +9,16 @@ const authorizeUser = (req, res, next) => {
     if (err) {
       return res.status(403).json({ message: "Forbidden" });
     }
-    // console.log(user)
 
-    req.user = await User.findUserbyID(user._id);
-    // console.log(req.user)
+    const dbUser = await User.findUserbyID(user.id);
+    req.user = new User(
+      dbUser.username,
+      dbUser.email,
+      dbUser.password,
+      dbUser.cart,
+      dbUser._id
+    );
+    // console.log(req.user);
     next();
   });
 };

@@ -1,6 +1,6 @@
 const express = require("express");
 const shopController = require("../controllers/shop");
-// const authorizeUser = require("../middlewares/userAuthorization");
+const authorizeUser = require("../middlewares/userAutherization");
 
 const router = express.Router();
 
@@ -11,7 +11,7 @@ router.get("/products/:productId", shopController.getProduct);
 
 // // user routes
 // router.get("/cart", authorizeUser, shopController.getCart);
-// router.post("/cart", authorizeUser, shopController.postCart);
+router.post("/cart", authorizeUser, shopController.postCart);
 // router.post(
 //   "/cart-delete-item",
 //   authorizeUser,

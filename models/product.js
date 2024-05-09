@@ -2,12 +2,13 @@ const { getDB } = require("../util/database");
 const mongodb = require("mongodb");
 
 class Product {
-  constructor(title, imageUrl, price, description, id) {
+  constructor(title, imageUrl, price, description, id, userId) {
     this.title = title;
     this.imageUrl = imageUrl;
     this.price = price;
     this.description = description;
-    this._id = id;
+    this._id = id ? new mongodb.ObjectId(this._id) : null;
+    this.userId = userId;
   }
   async save() {
     let db = getDB();
@@ -16,7 +17,7 @@ class Product {
       try {
         return await db
           .collection("products")
-          .updateOne({ _id: new mongodb.ObjectId(this._id) }, { $set: this });
+          .updateOne({ _id: this._id }, { $set: this });
       } catch (error) {
         console.log(error);
       }

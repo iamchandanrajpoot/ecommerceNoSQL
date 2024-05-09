@@ -29,13 +29,17 @@ exports.getAddProduct = (req, res, next) => {
 };
 
 exports.postAddProduct = async (req, res, next) => {
-  const title = req.body.title;
-  const imageUrl = req.body.imageUrl;
-  const price = req.body.price;
-  const description = req.body.description;
-  // const userId = req.user.id;
+  const { title, imageUrl, price, description } = req.body;
+
   // Create a new product
-  const product = new Product(title, imageUrl, price, description);
+  const product = new Product(
+    title,
+    imageUrl,
+    price,
+    description,
+    null,
+    req.user._id
+  );
   // Save the product
   try {
     const result = await product.save();
@@ -44,24 +48,6 @@ exports.postAddProduct = async (req, res, next) => {
   } catch (error) {
     console.log(error);
   }
-
-  // User.findByPk(userId)
-  //   .then((userInstance) => {
-  //     // Use createUserProduct on the user instance
-  //     return userInstance.createProduct({
-  //       title,
-  //       imageUrl,
-  //       price,
-  //       description,
-  //     });
-  //   })
-  //   .then(() => {
-  //     res.redirect("/");
-  //   })
-  //   .catch((err) => {
-  //     console.log(err);
-  //     res.status(500).send("Internal Server Error");
-  //   });
 };
 
 exports.getEditProduct = (req, res, next) => {
