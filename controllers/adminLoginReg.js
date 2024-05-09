@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const User = require("../models/user");
+const User = require("../models/user.js");
+
 // const secret_key = process.env.JWT_SECRET_KEY
 
 const secret_key = process.env.JWT_SECRET_KEY;
@@ -10,10 +11,9 @@ const loginController = async (req, res) => {
       res.status(400).json({ message: "enter login details first" });
     }
     // get login credentials
-  
+
     const { username, password } = req.body;
-    const user = await User.findOne({ where: { username } });
-    console.log(user);
+    const user = await User.fetchOneUser(username);
 
     if (!user) {
       res.status(401).json({ message: "invalid username or password" });
@@ -22,16 +22,16 @@ const loginController = async (req, res) => {
     // compare name and password with password saved in database by bcryt
     if (await bcrypt.compare(password, user.password)) {
       // if user exit in databae with given credentials give him token by jwt
-      console.log("control comes to me");
       const token = jwt.sign(
-        { id: user.id, username: user.username, email: user.email },
+        { id: user._id, username: user.username, email: user.email },
         secret_key
       );
       // res.json({token})
+      console.log(token);
       res.cookie("authToken", token, { maxAge: 3600000, httpOnly: true });
       res.redirect("/admin/products");
-    }else{
-      res.json({message: "wrong password"})
+    } else {
+      res.json({ message: "wrong password" });
     }
   } catch (error) {
     console.log(error);
@@ -42,9 +42,13 @@ const loginController = async (req, res) => {
 const registerController = async (req, res) => {
   try {
     // hash password before save it on database
-    req.body.password = await bcrypt.hash(req.body.password, 10);
+    const username = req.body.username;
+    const email = req.body.email;
+    const password = await bcrypt.hash(req.body.password, 10);
     // save data in database from req body send by user during registeration
-    const result = await User.create(req.body);
+
+    const user = new User(username, email, password);
+    const result = await user.save();
     console.log(result);
     res.redirect("/admin/login");
   } catch (error) {

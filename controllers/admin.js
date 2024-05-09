@@ -4,20 +4,20 @@ const mongodb = require("mongodb");
 // const Product = require("../models/product");
 // const User = require("../models/user");
 
-// exports.getLoginPage = (req, res) => {
-//   res.render("admin/login", {
-//     pageTitle: "login user",
-//     path: "/admin/login",
-//     user: null
-//   });
-// };
-// exports.getRegisterPage = (req, res) => {
-//   res.render("admin/register", {
-//     pageTitle: "register user",
-//     path: "/admin/register",
-//     user:null
-//   });
-// };
+exports.getLoginPage = (req, res) => {
+  res.render("admin/login", {
+    pageTitle: "login user",
+    path: "/admin/login",
+    user: null,
+  });
+};
+exports.getRegisterPage = (req, res) => {
+  res.render("admin/register", {
+    pageTitle: "register user",
+    path: "/admin/register",
+    user: null,
+  });
+};
 
 exports.getAddProduct = (req, res, next) => {
   res.render("admin/edit-product", {
