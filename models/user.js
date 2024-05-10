@@ -6,7 +6,7 @@ class User {
     this.username = username;
     this.email = email;
     this.password = password;
-    this.cart = cart || { items: [] }; //{items: []}
+    this.cart = cart || { items: [] };
     this._id = id;
   }
   async save() {
@@ -58,6 +58,48 @@ class User {
     const db = getDB();
     try {
       return db
+        .collection("users")
+        .updateOne(
+          { _id: new mongodb.ObjectId(this._id) },
+          { $set: { cart: updatedCart } }
+        );
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  // get cart items
+  async getCart() {
+    const db = getDB();
+    const productIds = this.cart.items.map((item) => item.productId);
+    try {
+      const products = await db
+        .collection("products")
+        .find({ _id: { $in: productIds } })
+        .toArray();
+      return products.map((p) => {
+        return {
+          ...p,
+          quantity: this.cart.items.find((i) => {
+            return i.productId.toString() === p._id.toString();
+          }).quantity,
+        };
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  async updateCart(prodId) {
+    prodId = new mongodb.ObjectId(prodId);
+    const db = getDB();
+    // delete cart item with given product id
+    const remainingItems = this.cart.items.filter(
+      (cp) => cp.productId.toString() !== prodId.toString()
+    );
+    const updatedCart = {
+      items: remainingItems,
+    };
+    try {
+      return await db
         .collection("users")
         .updateOne(
           { _id: new mongodb.ObjectId(this._id) },

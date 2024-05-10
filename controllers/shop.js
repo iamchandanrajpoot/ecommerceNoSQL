@@ -46,51 +46,48 @@ exports.getIndex = (req, res, next) => {
     });
 };
 
-// exports.getCart = async (req, res) => {
-//   try {
-//     const userInstance = await User.findByPk(req.user.id);
-//     const cartInstance = await userInstance.getCart();
-//     const cartProducts = await cartInstance.getProducts();
-//     console.log("tfy ouy uupiip");
-//     // console.log(cartProducts);
-//     res.render("shop/cart", {
-//       path: "/cart",
-//       pageTitle: "Your Cart",
-//       products: cartProducts,
-//       user: req.user
-//     });
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };
+exports.getCart = async (req, res) => {
+  try {
+    const cartProducts = await req.user.getCart();
+    console.log(cartProducts);
+    res.render("shop/cart", {
+      path: "/cart",
+      pageTitle: "Your Cart",
+      products: cartProducts,
+      user: req.user,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 exports.postCart = async (req, res) => {
   const prodId = req.body.productId;
   try {
     const product = await Product.findByID(prodId);
-    const result = await req.user.addToCart(product, req.user.id);
-    console.log(result);
+    await req.user.addToCart(product);
     res.redirect("/cart");
   } catch (error) {
     console.log(error);
   }
 };
 
-// exports.postCartDeleteProduct = async (req, res) => {
-//   try {
-//     const userInstance = await User.findByPk(req.user.id);
-//     const cartInstance = await userInstance.getCart();
+exports.postCartDeleteProduct = async (req, res) => {
+  try {
+    await req.user.updateCart(req.body.productId);
+    // const userInstance = await User.findByPk(req.user.id);
+    // const cartInstance = await userInstance.getCart();
 
-//     const productsToRemoved = await cartInstance.getProducts({
-//       where: { id: req.body.productId },
-//     });
-//     await cartInstance.removeProducts(productsToRemoved);
-//     res.redirect("/cart");
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).json({ message: "internal server error" });
-//   }
-// };
+    // const productsToRemoved = await cartInstance.getProducts({
+    //   where: { id: req.body.productId },
+    // });
+    // await cartInstance.removeProducts(productsToRemoved);
+    res.redirect("/cart");
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "internal server error" });
+  }
+};
 
 // exports.postOrder = async (req, res) => {
 //   try {
