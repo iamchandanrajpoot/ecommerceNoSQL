@@ -17,8 +17,8 @@ router.post(
   authorizeUser,
   shopController.postCartDeleteProduct
 );
-// router.get("/orders", authorizeUser, shopController.getOrders);
-// router.post("/create-order", authorizeUser, shopController.postOrder);
+router.get("/orders", authorizeUser, shopController.getOrders);
+router.post("/create-order", authorizeUser, shopController.postOrder);
 // router.get("/checkout", shopController.getCheckout);
 
 module.exports = router;

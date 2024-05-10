@@ -8,7 +8,7 @@ class Product {
     this.price = price;
     this.description = description;
     this._id = id ? new mongodb.ObjectId(this._id) : null;
-    this.userId = userId;
+    this.userId = new mongodb.ObjectId(userId);
   }
   async save() {
     let db = getDB();

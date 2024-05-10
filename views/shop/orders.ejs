@@ -6,12 +6,12 @@
         <main>
             <% if (orders.length > 0) { %>
               <ul>
-                <% for (let orderItems of orders) { %>
+                <% for (let order of orders) { %>
                   <li>
-                    oderId
+                    oderId:  <%= order._id %>
                     <ul>
-                    <% for (let item of orderItems) { %>
-                      <li><%= item.title %>(<%=item.OrderItem.quantity %>) </li>
+                    <% for (let item of order.items) { %>
+                      <li><%= item.title %>(<%=item.quantity %>) </li>
                     <%}%>
                   </ul>
                   </li>
