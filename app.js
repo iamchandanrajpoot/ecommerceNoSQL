@@ -4,20 +4,13 @@ const dotenv = require("dotenv");
 dotenv.config();
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
+const mongoose = require("mongoose");
 
 const errorController = require("./controllers/error");
-const { connectDB } = require("./util/database");
+// const { connectDB } = require("./util/database");
 
-// const sequelize = require("./util/database");
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
-
-// // associations
-// require("./models/associations/user_product");
-// require("./models/associations/user_cart");
-// require("./models/associations/cart_product");
-// require("./models/associations/user_order");
-// require("./models/associations/oder_product");
 
 const app = express();
 app.set("view engine", "ejs");
@@ -29,21 +22,22 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
-// app.use()
 
 app.use(errorController.get404);
-// sequelize
-//   .sync()
-//   // .sync({force: true})
-//   .then(() => {
-//     console.log("Databasse synced");
 
-//   })
-//   .catch((err) => {
-//     console.log(err);
+// connectDB(() => {
+//   app.listen(4000, () => {
+//     console.log("App is running on http://localhost:4000");
 //   });
-connectDB(() => {
-  app.listen(4000, () => {
-    console.log("App is running on http://localhost:4000");
+// });
+
+mongoose
+  .connect(process.env.MONGO_CONNECTION_URI)
+  .then((result) => {
+    app.listen(4000, () => {
+      console.log("App is running on http://localhost:4000");
+    });
+  })
+  .catch((error) => {
+    console.log(error);
   });
-});

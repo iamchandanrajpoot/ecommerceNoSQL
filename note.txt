@@ -1,0 +1,18 @@
+Choose SQL Databases When:
+->Your data has a well-defined structure with clear relationships.
+->Your application requires complex querying and reporting capabilities.
+->You need strong consistency and ACID transactions.
+->Vertical scalability is sufficient for your workload.
+
+Choose NoSQL Databases When:
+->Your data is semi-structured or unstructured.
+->Your application requires horizontal scalability and high availability.
+->Schema flexibility is important, and the schema may evolve over time.
+->Your workload involves handling large volumes of data or high traffic loads.
+->You're building modern, cloud-native applications or microservices architectures.
+
+
+ An ODM (Object-Document Mapper) is a software library or framework used in conjunction
+ with NoSQL databases, such as MongoDB.
+It provides an abstraction layer that allows developers to interact with the database using
+object-oriented programming constructs.
