@@ -1,8 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const User = require("../models/user.js");
-
-// const secret_key = process.env.JWT_SECRET_KEY
+const User = require("../models/user");
 
 const secret_key = process.env.JWT_SECRET_KEY;
 const loginController = async (req, res) => {
@@ -13,7 +11,7 @@ const loginController = async (req, res) => {
     // get login credentials
 
     const { username, password } = req.body;
-    const user = await User.fetchOneUser(username);
+    const user = await User.findOne({ username: username });
 
     if (!user) {
       res.status(401).json({ message: "invalid username or password" });
@@ -27,7 +25,7 @@ const loginController = async (req, res) => {
         secret_key
       );
       // res.json({token})
-      console.log(token);
+      // console.log(token);
       res.cookie("authToken", token, { maxAge: 3600000, httpOnly: true });
       res.redirect("/admin/products");
     } else {
@@ -47,7 +45,12 @@ const registerController = async (req, res) => {
     const password = await bcrypt.hash(req.body.password, 10);
     // save data in database from req body send by user during registeration
 
-    const user = new User(username, email, password);
+    const user = new User({
+      username,
+      email,
+      password,
+    });
+    // save user in database
     const result = await user.save();
     console.log(result);
     res.redirect("/admin/login");

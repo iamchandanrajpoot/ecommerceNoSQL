@@ -1,23 +1,22 @@
-const { set } = require("mongoose");
 const Product = require("../models/product");
 
 // const Product = require("../models/product");
 // const User = require("../models/user");
 
-// exports.getLoginPage = (req, res) => {
-//   res.render("admin/login", {
-//     pageTitle: "login user",
-//     path: "/admin/login",
-//     user: null,
-//   });
-// };
-// exports.getRegisterPage = (req, res) => {
-//   res.render("admin/register", {
-//     pageTitle: "register user",
-//     path: "/admin/register",
-//     user: null,
-//   });
-// };
+exports.getLoginPage = (req, res) => {
+  res.render("admin/login", {
+    pageTitle: "login user",
+    path: "/admin/login",
+    user: null,
+  });
+};
+exports.getRegisterPage = (req, res) => {
+  res.render("admin/register", {
+    pageTitle: "register user",
+    path: "/admin/register",
+    user: null,
+  });
+};
 
 exports.getAddProduct = (req, res, next) => {
   res.render("admin/edit-product", {
@@ -30,7 +29,6 @@ exports.getAddProduct = (req, res, next) => {
 
 exports.postAddProduct = async (req, res, next) => {
   const { title, imageUrl, price, description } = req.body;
-
   // Save the product
   try {
     const product = await Product.create({
@@ -38,6 +36,7 @@ exports.postAddProduct = async (req, res, next) => {
       imageUrl: imageUrl,
       price: price,
       description: description,
+      userId: req.user,
     });
     console.log(product);
     res.redirect("/");
@@ -79,7 +78,6 @@ exports.postEditProduct = (req, res) => {
   };
   Product.findOneAndUpdate({ _id: prodId }, { $set: product })
     .then((result) => {
-      console.log(result);
       res.redirect("/admin/products");
     })
     .catch((err) => {
@@ -89,14 +87,19 @@ exports.postEditProduct = (req, res) => {
 };
 
 exports.getProducts = (req, res) => {
-  Product.find().then((products) => {
-    res.render("admin/products", {
-      prods: products,
-      pageTitle: "Admin Products",
-      path: "/admin/products",
-      user: req.user,
+  Product.find()
+    // .select("title price") //it is used to select or unselect field of document
+    // .populate("userId")//this is used replace references to documents
+    // here i want populate user document in each producd document
+    .then((products) => {
+      console.log(products);
+      res.render("admin/products", {
+        prods: products,
+        pageTitle: "Admin Products",
+        path: "/admin/products",
+        user: req.user,
+      });
     });
-  });
 };
 
 exports.postDeleteProduct = (req, res, next) => {
