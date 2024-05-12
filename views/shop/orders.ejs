@@ -8,13 +8,14 @@
               <ul>
                 <% for (let order of orders) { %>
                   <li>
-                    oderId:  <%= order._id %>
-                    <ul>
-                    <% for (let item of order.items) { %>
-                      <li><%= item.title %>(<%=item.quantity %>) </li>
-                    <%}%>
-                  </ul>
+                    <%= %>
+                    <p> oderId:  <%= order._id %> </p>
+                    <p>title :   <%= order.product.title %></p>
+                   <p> price : <%= order.product.price %> </p>
+                    <p>quantity :  <%= order.quantity%>
+                     </p>
                   </li>
+                  <br>
                 <% } %>
               </ul>
             <% } else { %>

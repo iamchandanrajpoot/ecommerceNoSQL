@@ -74,8 +74,6 @@ userSchema.methods.getCart = async function () {
 
 userSchema.methods.updateCart = async function (prodId) {
   // delete cart item with given product id
-  console.log("produid dg[ jsp goprgoepr");
-  console.log(prodId);
   const filteredItems = this.cart.items.filter(
     (cp) => cp.productId.toString() !== prodId.toString()
   );
@@ -90,6 +88,14 @@ userSchema.methods.updateCart = async function (prodId) {
   }
 };
 
+userSchema.methods.clearCart = async function () {
+  this.cart = { items: [] };
+  try {
+    return await this.save();
+  } catch (error) {
+    console.log(error);
+  }
+};
 const User = mongoose.model("User", userSchema);
 module.exports = User;
 

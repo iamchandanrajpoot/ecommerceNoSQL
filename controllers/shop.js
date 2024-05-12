@@ -1,3 +1,4 @@
+const Order = require("../models/order");
 const Product = require("../models/product");
 
 // const User = require("../models/user");
@@ -50,8 +51,10 @@ exports.getIndex = (req, res, next) => {
 
 exports.getCart = async (req, res) => {
   try {
-    const cartProducts = await req.user.getCart();
-
+    // const cartProducts = await req.user.getCart();
+    const user = await req.user.populate("cart.items.productId");
+    console.log("user in get cart: ", user.cart.items);
+    const cartProducts = user.cart.items;
     res.render("shop/cart", {
       path: "/cart",
       pageTitle: "Your Cart",
@@ -87,31 +90,47 @@ exports.postCartDeleteProduct = async (req, res) => {
   }
 };
 
-// exports.postOrder = async (req, res) => {
-//   try {
-//     await req.user.addOrder();
-//     res.redirect("/orders");
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).json({ message: "internal server error" });
-//   }
-// };
+exports.postOrder = async (req, res) => {
+  try {
+    const user = await req.user.populate("cart.items.productId");
+    const products = user.cart.items.map((i) => {
+      return { product: { ...i.productId._doc }, quantity: i.quantity };
+    });
 
-// exports.getOrders = async (req, res) => {
-//   try {
-//     const userOrders = await req.user.getOrders();
-//     console.log(userOrders);
-//     res.render("shop/orders", {
-//       path: "/orders",
-//       pageTitle: "My Oders",
-//       orders: userOrders,
-//       user: req.user,
-//     });
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).json({ message: "internal server error" });
-//   }
-// };
+    console.log("-----------------------------");
+    console.log(products);
+    const order = new Order({
+      orderItems: products,
+      user: {
+        username: req.user.username,
+        userId: req.user,
+      },
+    });
+
+    await order.save();
+    // empty cart
+    await req.user.clearCart();
+    res.redirect("/orders");
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "internal server error" });
+  }
+};
+
+exports.getOrders = async (req, res) => {
+  try {
+    const orders = await Order.findOne({ "user.userId": req.user._id });
+    res.render("shop/orders", {
+      path: "/orders",
+      pageTitle: "My Oders",
+      orders: orders.orderItems,
+      user: req.user,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "internal server error" });
+  }
+};
 
 // exports.getCheckout = (req, res, next) => {
 //   res.render("shop/checkout", {
