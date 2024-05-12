@@ -35,10 +35,10 @@ router.get(
 
 router.post("/edit-product", authorizeUser, adminController.postEditProduct);
 
-// router.post(
-//   "/delete-product",
-//   authorizeUser,
-//   adminController.postDeleteProduct
-// );
+router.post(
+  "/delete-product",
+  authorizeUser,
+  adminController.postDeleteProduct
+);
 
 module.exports = router;

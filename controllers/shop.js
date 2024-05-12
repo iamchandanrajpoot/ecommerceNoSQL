@@ -6,6 +6,7 @@ const Product = require("../models/product");
 exports.getProducts = (req, res, next) => {
   Product.find()
     .then((products) => {
+      console.log(products);
       res.render("shop/index", {
         prods: products,
         pageTitle: "Shop",
@@ -50,7 +51,7 @@ exports.getIndex = (req, res, next) => {
 exports.getCart = async (req, res) => {
   try {
     const cartProducts = await req.user.getCart();
-    console.log(cartProducts);
+
     res.render("shop/cart", {
       path: "/cart",
       pageTitle: "Your Cart",
@@ -64,6 +65,7 @@ exports.getCart = async (req, res) => {
 
 exports.postCart = async (req, res) => {
   const prodId = req.body.productId;
+
   try {
     const product = await Product.findById(prodId);
     await req.user.addToCart(product);
@@ -73,15 +75,17 @@ exports.postCart = async (req, res) => {
   }
 };
 
-// exports.postCartDeleteProduct = async (req, res) => {
-//   try {
-//     await req.user.updateCart(req.body.productId);
-//     res.redirect("/cart");
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).json({ message: "internal server error" });
-//   }
-// };
+exports.postCartDeleteProduct = async (req, res) => {
+  try {
+    const prodId = req.body.productId;
+    const result = await req.user.updateCart(prodId);
+    console.log(result);
+    res.redirect("/cart");
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "internal server error" });
+  }
+};
 
 // exports.postOrder = async (req, res) => {
 //   try {
